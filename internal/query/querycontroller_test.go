@@ -8,7 +8,7 @@ import (
 )
 
 func QueryControllerSetShouldInsertANewKeyValuePair(t *testing.T) {
-	store := NewKeyvalStore(NewFileDataStorage(), NewMemtable())
+	store := NewKeyvalStore(NewFileDataStorage(), NewMemtable(), &QueryParser{})
 	handler := QueryController(store)
 	req := httptest.NewRequest(
 		http.MethodPost,
@@ -26,7 +26,7 @@ func QueryControllerSetShouldInsertANewKeyValuePair(t *testing.T) {
 }
 
 func QueryControllerDelShouldRemoveAKeyValuePair(t *testing.T) {
-	store := NewKeyvalStore(NewFileDataStorage(), NewMemtable())
+	store := NewKeyvalStore(NewFileDataStorage(), NewMemtable(), &QueryParser{})
 	handler := QueryController(store)
 	req := httptest.NewRequest(
 		http.MethodPost,

@@ -22,11 +22,14 @@ func QueryController(store *KeyvalStore) http.HandlerFunc {
 			http.Error(w, "invalid params", http.StatusBadRequest)
 			return
 		}
-		if queryRequest.Query == "" {
-			http.Error(w, "query is required", http.StatusBadRequest)
+
+		result, err := store.ExecuteQuery(queryRequest.Query)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		w.WriteHeader(http.StatusCreated)
+		_, _ = w.Write([]byte(result))
 	}
 }
