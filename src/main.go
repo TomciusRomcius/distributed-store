@@ -11,6 +11,7 @@ func main() {
 	memtable := query.NewMemtable()
 
 	keyValStore := query.NewKeyvalStore(fileDataStorage, memtable)
+	keyValStore.InitFromLog()
 	http.HandleFunc("/query", query.QueryController(keyValStore))
 	http.ListenAndServe(":8080", nil)
 }

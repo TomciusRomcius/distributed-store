@@ -1,6 +1,10 @@
 package query
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/tomciusromcius/distributed-store/src/packages/query/types"
+)
 
 type Memtable struct {
 	container map[string]string
@@ -26,4 +30,15 @@ func (r *Memtable) set(key string, value string) {
 
 func (r *Memtable) del(key string) {
 	delete(r.container, key)
+}
+
+func (r *Memtable) PopulateFromChannel(channel chan types.LogEntry) {
+	for msg := range channel {
+		if msg.Operation == types.OperationAdd {
+			r.set(msg.Key, msg.Val)
+		}
+		if msg.Operation == types.OperationRemove {
+			r.del(msg.Key)
+		}
+	}
 }

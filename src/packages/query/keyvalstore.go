@@ -1,7 +1,10 @@
 package query
 
 import (
+	"fmt"
 	"sync"
+
+	"github.com/tomciusromcius/distributed-store/src/packages/query/types"
 )
 
 type KeyvalStore struct {
@@ -15,6 +18,13 @@ func NewKeyvalStore(fileDataStorage *FileDataStorage, memtable *Memtable) *Keyva
 		memtable:        *memtable,
 		fileDataStorage: *fileDataStorage,
 	}
+}
+
+func (r *KeyvalStore) InitFromLog() {
+	channel := make(chan types.LogEntry)
+	go r.fileDataStorage.RetrieveEntries(channel)
+	r.memtable.PopulateFromChannel(channel)
+	fmt.Println("Finished initializing from disk")
 }
 
 func (r *KeyvalStore) get(key string) (string, error) {
