@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/tomciusromcius/distributed-store/src/packages/query/types"
+	"github.com/tomciusromcius/distributed-store/internal/query/types"
 )
 
 type KeyvalStore struct {

@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/tomciusromcius/distributed-store/src/packages/query/types"
-	"github.com/tomciusromcius/distributed-store/src/packages/utils"
+	"github.com/tomciusromcius/distributed-store/internal/query/types"
+	"github.com/tomciusromcius/distributed-store/internal/utils"
 )
 
 type FileDataStorage struct {

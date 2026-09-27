@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/tomciusromcius/distributed-store/src/packages/query"
+	"github.com/tomciusromcius/distributed-store/internal/query"
 )
 
 func main() {

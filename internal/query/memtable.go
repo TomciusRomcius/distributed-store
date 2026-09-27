@@ -3,7 +3,7 @@ package query
 import (
 	"errors"
 
-	"github.com/tomciusromcius/distributed-store/src/packages/query/types"
+	"github.com/tomciusromcius/distributed-store/internal/query/types"
 )
 
 type Memtable struct {
