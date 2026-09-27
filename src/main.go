@@ -3,10 +3,14 @@ package main
 import (
 	"net/http"
 
-	"github.com/tomciusromcius/distributed-store/src/controllers"
+	"github.com/tomciusromcius/distributed-store/src/packages/query"
 )
 
 func main() {
-	http.HandleFunc("/query", controllers.QueryController)
+	fileDataStorage := query.NewFileDataStorage()
+	memtable := query.NewMemtable()
+
+	keyValStore := query.NewKeyvalStore(fileDataStorage, memtable)
+	http.HandleFunc("/query", query.QueryController(keyValStore))
 	http.ListenAndServe(":8080", nil)
 }
