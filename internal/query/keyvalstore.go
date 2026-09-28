@@ -1,6 +1,7 @@
 package query
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"sync"
@@ -47,6 +48,22 @@ func (r *KeyvalStore) ExecuteQuery(query string) (string, error) {
 		return "", errors.New("Invalid operation")
 	}
 	return "", nil
+}
+
+func (r *KeyvalStore) DumpDataJson() (string, error) {
+	channel := make(chan *types.Pair)
+	go r.memtable.DumpToStream(channel)
+	pairs := []*types.Pair{}
+	for pair := range channel {
+		pairs = append(pairs, pair)
+	}
+
+	jsonBytes, err := json.Marshal(pairs)
+	if err != nil {
+		return "", err
+	}
+	jsonStr := string(jsonBytes)
+	return jsonStr, nil
 }
 
 func (r *KeyvalStore) get(key string) (string, error) {

@@ -42,3 +42,10 @@ func (r *Memtable) PopulateFromChannel(channel chan types.LogEntry) {
 		}
 	}
 }
+
+func (r *Memtable) DumpToStream(channel chan *types.Pair) {
+	defer close(channel)
+	for key, val := range r.container {
+		channel <- &types.Pair{Key: key, Val: val}
+	}
+}
