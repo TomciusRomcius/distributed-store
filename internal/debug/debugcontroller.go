@@ -18,6 +18,7 @@ func DebugController(keyvalStore *query.KeyvalStore) func(w http.ResponseWriter,
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(dataJson))
 	}
