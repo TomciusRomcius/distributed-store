@@ -39,8 +39,15 @@ func (r *KeyvalStore) ExecuteQuery(query string) (string, error) {
 
 	switch queryCmd.Operation {
 	case types.QueryOperationSet:
+		logEntry := queryCommandToLogEntry(queryCmd)
+		err := r.fileDataStorage.AppendToLog(logEntry)
+		if err != nil {
+			return "", err
+		}
 		r.set(queryCmd.Key, queryCmd.Val)
 	case types.QueryOperationDel:
+		logEntry := queryCommandToLogEntry(queryCmd)
+		r.fileDataStorage.AppendToLog(logEntry)
 		r.del(queryCmd.Key)
 	case types.QueryOperationGet:
 		return r.get(queryCmd.Key)
@@ -86,4 +93,15 @@ func (r *KeyvalStore) del(key string) {
 	r.mutex.Lock()
 	r.memtable.del(key)
 	r.mutex.Unlock()
+}
+
+func queryCommandToLogEntry(command *types.QueryCommand) *types.LogEntry {
+	if command.Operation != types.QueryOperationSet && command.Operation != types.QueryOperationDel {
+		panic("Invalid operation")
+	}
+	return &types.LogEntry{
+		Key:       command.Key,
+		Val:       command.Val,
+		Operation: types.Operation(command.Operation),
+	}
 }

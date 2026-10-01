@@ -34,7 +34,7 @@ func (r *Memtable) del(key string) {
 
 func (r *Memtable) PopulateFromChannel(channel chan types.LogEntry) {
 	for msg := range channel {
-		if msg.Operation == types.OperationAdd {
+		if msg.Operation == types.OperationSet {
 			r.set(msg.Key, msg.Val)
 		}
 		if msg.Operation == types.OperationRemove {

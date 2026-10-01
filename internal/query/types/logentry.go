@@ -3,7 +3,7 @@ package types
 type Operation string
 
 const (
-	OperationAdd    Operation = "add"
+	OperationSet    Operation = "set"
 	OperationRemove Operation = "remove"
 )
 
@@ -22,7 +22,7 @@ func newLogEntry(operation Operation, key string, val string) *LogEntry {
 }
 
 func NewAddLogEntry(key string, val string) *LogEntry {
-	return newLogEntry(OperationAdd, key, val)
+	return newLogEntry(OperationSet, key, val)
 }
 
 func NewRemoveLogEntry(key string) *LogEntry {
