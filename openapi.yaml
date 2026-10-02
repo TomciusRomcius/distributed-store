@@ -1,0 +1,110 @@
+openapi: 3.0.3
+info:
+  title: Distributed Store API
+  description: HTTP API for the distributed key-value store.
+  version: 0.1.0
+paths:
+  /query:
+    post:
+      summary: Execute a key-value query
+      description: |
+        Executes one of the supported text commands:
+        `set {key} {value}`, `get {key}`, or `del {key}`.
+
+        Values containing spaces are not supported; the parser uses the first
+        value token after the key.
+      operationId: executeQuery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+            examples:
+              set:
+                value:
+                  query: set greeting hello
+              get:
+                value:
+                  query: get greeting
+              delete:
+                value:
+                  query: del greeting
+      responses:
+        '201':
+          description: Query executed successfully.
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                write:
+                  value: ""
+                read:
+                  value: hello
+        '400':
+          description: Invalid JSON or invalid/unknown query command.
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                invalidRequest:
+                  value: invalid params
+                invalidQuery:
+                  value: query is empty
+        '405':
+          description: HTTP method is not allowed.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /debug:
+    get:
+      summary: Dump all stored key-value pairs
+      description: |
+        Returns the current in-memory store contents. This endpoint is
+        registered only when the `Configuration` environment variable is
+        set to `debug`.
+      operationId: dumpDebugData
+      responses:
+        '200':
+          description: Current key-value pairs.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/KeyValuePair'
+        '405':
+          description: HTTP method is not allowed.
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: The store could not be serialized.
+          content:
+            text/plain:
+              schema:
+                type: string
+components:
+  schemas:
+    QueryRequest:
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          description: Text command to execute.
+          example: set greeting hello
+    KeyValuePair:
+      type: object
+      properties:
+        Key:
+          type: string
+          description: Stored key.
+        Val:
+          type: string
+          description: Stored value.
